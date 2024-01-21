@@ -1,3 +1,10 @@
+const readline = require("readline");
+
+const rl = readline.createInterface({
+  input: process.stdin,
+  output: process.stdout,
+});
+
 class Product {
   constructor(id, name, price) {
     this.id = id;
@@ -25,9 +32,11 @@ class ShoppingCart {
 }
 
 const products = [
-  new Product(1, "Laptop", 1000),
-  new Product(2, "Headphones", 50),
-  new Product(3, "Smartphone", 500),
+  new Product(1, "SanDisk", 599),
+  new Product(2, "Hisense Deep Freezer", 1299),
+  new Product(3, "Binatone Iron", 79),
+  new Product(4, "Tecno Tablet", 349),
+  new Product(5, "Oraimo Smartwatch", 199),
 ];
 
 const shoppingCart = new ShoppingCart();
@@ -40,15 +49,18 @@ function displayProducts() {
 }
 
 function main() {
-  while (true) {
+  console.log("Welcome to Dozzy Electronics and Accessories!\n");
+
+  function promptUser(question) {
+    return new Promise((resolve) => rl.question(question, resolve));
+  }
+
+  async function handleChoice() {
     console.log(
-      "\n1. Display Products\n2. Add to Cart\n3. View Cart\n4. Checkout\n5. Exit"
+      "1. Display Products\n2. Add to Cart\n3. View Cart\n4. Checkout\n5. Exit"
     );
+    const choice = await promptUser("Enter your choice: ");
 
-    // Get user's choice
-    const choice = prompt("Enter your choice: ");
-
-    // Perform actions based on user's choice
     switch (choice) {
       case "1":
         displayProducts();
@@ -56,9 +68,9 @@ function main() {
       case "2":
         displayProducts();
         const productId = parseInt(
-          prompt("Enter the product ID to add to cart:")
+          await promptUser("Enter the product ID to add to cart:")
         );
-        const quantity = parseInt(prompt("Enter the quantity:"));
+        const quantity = parseInt(await promptUser("Enter the quantity:"));
         const selectedProduct = products.find(
           (product) => product.id === productId
         );
@@ -81,14 +93,21 @@ function main() {
         console.log(
           "Thank you for shopping with us! Your order has been placed."
         );
-        return; // Exit the program
+        rl.close();
+        break;
       case "5":
         console.log("Exiting the program. Goodbye!");
-        return; // Exit the program
+        rl.close();
+        break;
       default:
         console.log("Invalid choice. Please try again.");
+        break;
     }
+
+    handleChoice();
   }
+
+  handleChoice();
 }
 
 main();
